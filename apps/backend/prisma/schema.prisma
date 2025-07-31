@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Course {
+  id          Int       @id @default(autoincrement())
+  title       String
+  level       String    // 5e, 4e, 3e
+  coverImage  String?   // URL Google Drive
+  description String?
+  sequences   Sequence[]
+}
+
+model Sequence {
+  id        Int      @id @default(autoincrement())
+  title     String
+  position  Int?
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  Int
+  resources Resource[]
+}
+
+model Resource {
+  id         Int      @id @default(autoincrement())
+  type       String   // pdf, link, app
+  label      String
+  url        String   // URL vers Drive ou autre
+  sequence   Sequence @relation(fields: [sequenceId], references: [id])
+  sequenceId Int
+}
