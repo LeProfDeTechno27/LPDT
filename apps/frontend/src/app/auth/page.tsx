@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 export default function Login() {
   return (
@@ -107,7 +107,7 @@ export default function Login() {
                 </a>
               </div>
               <div className="w-1/2 text-right">
-                <Link to="/auth/register" className="text-blueGray-200">
+                <Link href="/auth/register" className="text-blueGray-200">
                   <small>Create new account</small>
                 </Link>
               </div>

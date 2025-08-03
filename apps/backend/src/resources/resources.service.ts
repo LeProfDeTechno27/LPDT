@@ -1,29 +1,57 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { PrismaClient, Resource } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { UpdateResourceDto } from './dto/update-resource.dto';
 
 @Injectable()
 export class ResourcesService {
-  constructor(@Inject('PRISMA') private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  create(createResourceDto: CreateResourceDto): Promise<Resource> {
-    return this.prisma.resource.create({ data: createResourceDto });
+  async create(createResourceDto: CreateResourceDto) {
+  return this.prisma.resource.create({
+    data: createResourceDto, // PAS d'objet connect
+  });
+  }
+  
+  async create(createResourceDto: CreateResourceDto) {
+    const { sequenceId, ...data } = createResourceDto;
+    return this.prisma.resource.create({
+      data: {
+        ...data,
+        sequence: { connect: { id: sequenceId } }
+      }
+    });
   }
 
-  findAll(): Promise<Resource[]> {
-    return this.prisma.resource.findMany();
+  async findAll() {
+    return this.prisma.resource.findMany({
+      include: {
+        sequence: true, // pour retourner la séquence associée (optionnel)
+      }
+    });
   }
 
-  findOne(id: number): Promise<Resource | null> {
-    return this.prisma.resource.findUnique({ where: { id } });
+  async findOne(id: number) {
+    return this.prisma.resource.findUnique({
+      where: { id },
+      include: {
+        sequence: true,
+      }
+    });
   }
 
-  update(id: number, updateResourceDto: UpdateResourceDto): Promise<Resource> {
-    return this.prisma.resource.update({ where: { id }, data: updateResourceDto });
+  async update(id: number, updateResourceDto: UpdateResourceDto) {
+    const { sequenceId, ...data } = updateResourceDto;
+    return this.prisma.resource.update({
+      where: { id },
+      data: {
+        ...data,
+        ...(sequenceId && { sequence: { connect: { id: sequenceId } } })
+      }
+    });
   }
 
-  remove(id: number): Promise<Resource> {
+  async remove(id: number) {
     return this.prisma.resource.delete({ where: { id } });
   }
 }

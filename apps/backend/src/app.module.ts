@@ -6,9 +6,10 @@ import { CoursesModule } from './courses/courses.module';
 import { PrismaModule } from './prisma.module';
 import { SequencesModule } from './sequences/sequences.module';
 import { ResourcesModule } from './resources/resources.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [PrismaModule, CoursesModule, SequencesModule, ResourcesModule],
+  imports: [AuthModule, PrismaModule, CoursesModule, SequencesModule, ResourcesModule],
   controllers: [AppController],
   providers: [
     AppService,
