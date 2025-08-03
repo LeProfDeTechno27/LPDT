@@ -5,4 +5,4 @@ export class CreateResourceDto {
   type: string;
   label: string;
   sequenceId: number;
-}
+  sequence: number;}
